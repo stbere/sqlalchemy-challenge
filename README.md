@@ -32,6 +32,7 @@ Load the query results into a Pandas DataFrame, and set the index to the "date" 
 Sort the DataFrame values by "date".
 
 Plot the results by using the DataFrame plot method, as the following image shows:
+![image](https://user-images.githubusercontent.com/97980927/211687062-8228556e-3757-4850-b679-e6d359973673.png)
 
 A screenshot depicts the plot.
 Use Pandas to print the summary statistics for the precipitation data.
@@ -59,6 +60,7 @@ Filter by the station that has the greatest number of observations.
 Query the previous 12 months of TOBS data for that station.
 
 Plot the results as a histogram with bins=12, as the following image shows:
+![image](https://user-images.githubusercontent.com/97980927/211687105-9c4e6e77-e8ac-4851-b33a-67f9d835ee8d.png)
 
 A screenshot depicts the histogram.
 Close your session.
