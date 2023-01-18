@@ -6,11 +6,12 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
+import datetime as dt
 
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -57,7 +58,7 @@ def precipitation():
     precipitation = session.query(Measurement.date, Measurement.prcp).\
         filter(Measurement.date >= lastyr).all()
 
-    session.Close()
+    session.close()
 
     # Precipitation scores and date held in dictionaries
     precipitation_dictionary = {date: pr for date, pr in precipitation}
@@ -71,7 +72,7 @@ def stations():
 
     session.close()
     # listing station results
-    stations = list(np.ravel(stations_results))
+    stations = list(np.ravel(station_results))
     return jsonify(stations=stations)
 
 @app.route("/api/v1.0/tobs")
@@ -89,8 +90,8 @@ def mo_temp():
     return jsonify(temps=temps)
 
 @app.route("/api/v1.0/temp/start/<start>")
-@app.route("/api/v1.0/temp/<start>/</end>")
-def stats(start=Non, end=None):
+@app.route("/api/v1.0/temp/<start>/<end>")
+def stats(start=None, end=None):
     # min, max & average of tobs
     sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
 
