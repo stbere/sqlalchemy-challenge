@@ -44,8 +44,8 @@ def welcome():
         f"/api/v1.0/stations</br>"
         f"/api/v1.0/tobs</br>"
         f"/api/v1.0/temp/start/<start></br>"
-        f"/api/v1.0/temp/start/end</br>"
-        f"<p>'start' and 'end' should be replaced with a date in the format YYYY-MM-DD.</p>"
+        f"/api/v1.0/temps/start/end</br>"
+        f"<p>ATTN: The 'start' and 'end' should be replaced with a date format YYYY-MM-DD.</p>"
         )
 
 @app.route("/api/v1.0/precipitation")
@@ -90,7 +90,7 @@ def mo_temp():
     return jsonify(temps=temps)
 
 @app.route("/api/v1.0/temp/start/<start>")
-@app.route("/api/v1.0/temp/<start>/<end>")
+@app.route("/api/v1.0/temps/<start>/<end>")
 def stats(start=None, end=None):
     # min, max & average of tobs
     sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
@@ -99,15 +99,25 @@ def stats(start=None, end=None):
         # Starting date in YYY-MM-DD format
         start = dt.datetime.strptime(start, "%Y-%m-%d")
         # Query gathering min, max, average of tobs with starting date and the above
-        results = session.quer(*sel).\
-            filter(Measurement.date >= start).\
-                filter(Measurement.date <= end).all()
+        results = session.query(*sel).\
+            filter(Measurement.date >= start).all()
 
         session.close()
 
-        temps=list(np.ravel(results))
-        return jsonify(temps=temps)
+        temps = list(np.ravel(results))
+        return jsonify(temps)
+    # Start/end must be in YYYY-MM-DD format
+    start = dt.datetime.strptime(start, "%Y-%m-%d")
+    end = dt.datetime.strptime(end, "%Y-%m-%d")
+    # Query gathering min, max, average of tobs with starting date and the above
+    results = session.query(*sel).\
+        filter(Measurement.date >= start).\
+        filter(Measurement.date <= end).all()
+
+    session.close()
+
+    temps = list(np.ravel(results))
+    return jsonify(temps=temps)
 
 if __name__ == '__main__':
     app.run()
-
